@@ -1,6 +1,8 @@
 package application;
 	
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -36,6 +38,14 @@ public class Main extends Application {
         // Crear el botón
         Button button = new Button("Start");
         button.setStyle("-fx-font-size: 18px;");
+        button.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+				Scene scene = new Scene(new Tablero(), 500, 500);
+		        primaryStage.setScene(scene);
+			}
+		});
 
         Button button2 = new Button("Explanation");
         button.setStyle("-fx-font-size: 18px;");
