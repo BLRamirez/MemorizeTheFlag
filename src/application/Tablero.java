@@ -1,23 +1,29 @@
 package application;
 
+import java.time.Duration;
 import java.util.concurrent.Executors;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.Font;
 
-public class Tablero extends GridPane {
+public class Tablero extends BorderPane{
 	
 	private Button[][] buttons= new Button[4][4];
 
 	public Tablero() {
 		Game game = new Game();
+		GridPane grid = new GridPane();
 		for (int i = 0; i < game.getCells().length; i++) {
 			for (int j = 0; j < game.getCells()[i].length; j++) {
 				Cell cell = game.getCells()[i][j];
@@ -34,7 +40,7 @@ public class Tablero extends GridPane {
 					}
 				});
 
-				add(button, i, j, 1, 1);
+				grid.add(button, i, j, 1, 1);
 				buttons[i][j]=button;
 			}
 		}
@@ -44,20 +50,25 @@ public class Tablero extends GridPane {
 			column.setPercentWidth(25);
 			RowConstraints row = new RowConstraints();
 			row.setPercentHeight(25);
-			getColumnConstraints().add(column);
-			getRowConstraints().add(row);
+			grid.getColumnConstraints().add(column);
+			grid.getRowConstraints().add(row);
 		}
+		
+		setCenter(grid);
+		showTime(game);
+		
 		Executors.newSingleThreadExecutor().execute(new Runnable() {
 			
 			@Override
 			public void run() {
 				try {
-					while(true) {
+					while(!game.isFinished()) {
 						Thread.sleep(100);
 						Platform.runLater(new Runnable() {
 						    @Override
 						    public void run() {
 						       draw(game);
+						       showTime(game);
 						    }
 						});
 					}
@@ -65,8 +76,6 @@ public class Tablero extends GridPane {
 				}
 			}
 		});
-		
-		
 
 	}
 	
@@ -90,5 +99,17 @@ public class Tablero extends GridPane {
 	}
 	
 	
+	private void showTime(Game game) {
+		Duration duration = game.getDuration();
+		int hours = duration.toHoursPart();
+		int minutes = duration.toMinutesPart();
+		int seconds = duration.toSecondsPart();
+		Label label = new Label("Time: "+ String.format("%02d:%02d:%02d", hours, minutes, seconds));
+		label.setFont(new Font(30));
+		label.setAlignment(Pos.CENTER);
+		label.setMinHeight(50);
+		//label.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+		setBottom(label);
+	}
 	
 }
