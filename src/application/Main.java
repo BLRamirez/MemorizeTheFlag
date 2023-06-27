@@ -1,6 +1,7 @@
 package application;
 	
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -67,7 +68,10 @@ public class Main extends Application {
         // Crear la escena y configurarla en el escenario principal
         Scene scene = new Scene(vbox, 500, 500);
         primaryStage.setScene(scene);
-
+        primaryStage.setOnCloseRequest(e -> {
+        	Platform.exit();
+        	System.exit(0);
+        });
         // Mostrar la ventana
         primaryStage.show();
     }

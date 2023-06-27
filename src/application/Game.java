@@ -1,5 +1,11 @@
 package application;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,7 +25,7 @@ public class Game {
 
 	private Cell first = null;
 	private Cell second = null;
-	
+
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 
@@ -62,8 +68,9 @@ public class Game {
 			if (first.getCountry().equals(second.getCountry())) {
 				first = null;
 				second = null;
-				if(isFinished()) {
+				if (isFinished()) {
 					endTime = LocalDateTime.now();
+					this.saveDuration();
 				}
 			} else {
 				resetCells();
@@ -88,11 +95,11 @@ public class Game {
 			}
 		});
 	}
-	
+
 	public boolean isFinished() {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
-				if(!cells[i][j].isDisplayed()) {
+				if (!cells[i][j].isDisplayed()) {
 					return false;
 				}
 			}
@@ -101,7 +108,43 @@ public class Game {
 	}
 
 	public Duration getDuration() {
-		LocalDateTime end = endTime != null ? endTime :  LocalDateTime.now();
-		return Duration.between(startTime,end); 
+		LocalDateTime end = endTime != null ? endTime : LocalDateTime.now();
+		return Duration.between(startTime, end);
 	}
+
+	private void saveDuration() {
+		int MAX_NUMBER_OF_RECORDS = 5;
+
+		Path path = Paths.get(System.getProperty("user.dir") + "/records.txt");
+		List<Duration> previousDurations = getPreviousDurations(path);
+
+		try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path.toFile())))) {
+			List<Duration> allDurations = new ArrayList<>(previousDurations);
+			allDurations.add(getDuration());
+			Collections.sort(allDurations);
+
+			int counter = 0;
+			for (Duration duration : allDurations) {
+				if (counter < MAX_NUMBER_OF_RECORDS) {
+					pw.append(String.valueOf(duration.toMillis()));
+					pw.append(System.lineSeparator());
+				}
+				counter++;
+			}
+
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+	}
+
+	private List<Duration> getPreviousDurations(Path path) {
+		try {
+			List<String> lines = Files.readAllLines(path);
+			return lines.stream().map(line -> Duration.ofMillis(Long.parseLong(line))).toList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+
 }
