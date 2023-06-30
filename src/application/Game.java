@@ -115,10 +115,10 @@ public class Game {
 	private void saveDuration() {
 		int MAX_NUMBER_OF_RECORDS = 5;
 
-		Path path = Paths.get(System.getProperty("user.dir") + "/records.txt");
-		List<Duration> previousDurations = getPreviousDurations(path);
+		
+		List<Duration> previousDurations = getPreviousDurations();
 
-		try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path.toFile())))) {
+		try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(getSavePath().toFile())))) {
 			List<Duration> allDurations = new ArrayList<>(previousDurations);
 			allDurations.add(getDuration());
 			Collections.sort(allDurations);
@@ -136,13 +136,18 @@ public class Game {
 			System.err.println(e);
 		}
 	}
+	
+	private Path getSavePath() {
+		Path path = Paths.get(System.getProperty("user.dir") + "/records.txt");
+		return path;
+	}
 
-	private List<Duration> getPreviousDurations(Path path) {
+	public List<Duration> getPreviousDurations() {
 		try {
+			Path path = getSavePath();
 			List<String> lines = Files.readAllLines(path);
 			return lines.stream().map(line -> Duration.ofMillis(Long.parseLong(line))).toList();
 		} catch (Exception e) {
-			e.printStackTrace();
 			return new ArrayList<>();
 		}
 	}

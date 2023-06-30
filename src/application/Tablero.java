@@ -7,21 +7,29 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 public class Tablero extends BorderPane{
 	
 	private Button[][] buttons= new Button[4][4];
 
-	public Tablero() {
+	public Tablero(Stage primaryStage) {
+		BackgroundFill backgroundFill = new BackgroundFill(Color.AQUAMARINE, null, null);
+		Background background = new Background(backgroundFill);
+		setBackground(background);
 		Game game = new Game();
 		GridPane grid = new GridPane();
 		for (int i = 0; i < game.getCells().length; i++) {
@@ -72,7 +80,16 @@ public class Tablero extends BorderPane{
 						    }
 						});
 					}
+					Platform.runLater(new Runnable() {
+					    @Override
+					    public void run() {
+					    	Scene scene = new Scene(new Score(game), 500, 500);
+							primaryStage.setScene(scene);
+					    }
+					});
+					
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		});
@@ -108,7 +125,6 @@ public class Tablero extends BorderPane{
 		label.setFont(new Font(30));
 		label.setAlignment(Pos.CENTER);
 		label.setMinHeight(50);
-		//label.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 		setBottom(label);
 	}
 	
