@@ -88,7 +88,7 @@ public class Tablero extends BorderPane{
 					Platform.runLater(new Runnable() {
 					    @Override
 					    public void run() {
-					    	Scene scene = new Scene(new Score(game), 500, 500);
+					    	Scene scene = new Scene(new Score(game,primaryStage), 500, 500);
 							primaryStage.setScene(scene);
 					    }
 					});
