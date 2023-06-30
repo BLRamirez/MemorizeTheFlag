@@ -14,6 +14,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * clase que contiene la logica del juego de memoria
+ * @author LorenaRamirez
+ *
+ */
 public class Game {
 
 	private final static List<String> countries = List.of("colombia", "espana", "alemania", "mexico", "brasil",
@@ -29,11 +34,18 @@ public class Game {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 
+	/**
+	 * Inicializa el juego
+	 */
 	public Game() {
 		this.initializeCells();
 		this.startTime = LocalDateTime.now();
 	}
 
+	/**
+	 * genera la disposicion aleatoria de las banderas
+	 * @return
+	 */
 	private List<String> getRandomCountries() {
 		List<String> randomCountries = new ArrayList<>();
 		randomCountries.addAll(countries);
@@ -42,9 +54,11 @@ public class Game {
 		return randomCountries;
 	}
 
+	/**
+	 * inicializa las celdas, asociando una bandera a cada una de ellas
+	 */
 	private void initializeCells() {
 		List<String> randomCountries = getRandomCountries();
-
 		int index = 0;
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -54,10 +68,18 @@ public class Game {
 		}
 	}
 
+	/**
+	 * devuelve las celdas del juego
+	 * @return
+	 */
 	public Cell[][] getCells() {
 		return cells;
 	}
 
+	/**
+	 * permite mostrar la bandera de la celda proporcionada
+	 * @param cell
+	 */
 	public void display(Cell cell) {
 		if (first == null) {
 			first = cell;
@@ -78,6 +100,9 @@ public class Game {
 		}
 	}
 
+	/**
+	 * regresa las celadas a estar boca abajo en caso de que no coincidan
+	 */
 	private void resetCells() {
 		executor.execute(new Runnable() {
 
@@ -96,6 +121,10 @@ public class Game {
 		});
 	}
 
+	/**
+	 * devuelve true cuando todas las celdas estan descubiertas
+	 * @return
+	 */
 	public boolean isFinished() {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -107,11 +136,18 @@ public class Game {
 		return true;
 	}
 
+	/**
+	 * devuelve el tiempo que ha durado el juego
+	 * @return
+	 */
 	public Duration getDuration() {
 		LocalDateTime end = endTime != null ? endTime : LocalDateTime.now();
 		return Duration.between(startTime, end);
 	}
 
+	/**
+	 * permite guardar el tiempo de partida al terminar el juego
+	 */
 	private void saveDuration() {
 		int MAX_NUMBER_OF_RECORDS = 5;
 
@@ -137,11 +173,19 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * devuelve el archivo donde se almacena el ranking de tiempos
+	 * @return
+	 */
 	private Path getSavePath() {
 		Path path = Paths.get(System.getProperty("user.dir") + "/records.txt");
 		return path;
 	}
 
+	/**
+	 * devuelve el ranking de tiempo
+	 * @return
+	 */
 	public List<Duration> getPreviousDurations() {
 		try {
 			Path path = getSavePath();

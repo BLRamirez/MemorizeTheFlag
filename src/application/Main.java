@@ -18,6 +18,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * es la clase principal que contiene el menu del juego
+ * @author LorenaRamirez
+ */
 public class Main extends Application {
 
 	@Override

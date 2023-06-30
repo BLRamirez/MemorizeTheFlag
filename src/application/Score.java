@@ -12,6 +12,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+/**
+ * Es el ranking de los 5 mejores tiempos
+ * @author LorenaRamirez
+ *
+ */
 public class Score extends BorderPane{
 
 	public Score(Game game) {

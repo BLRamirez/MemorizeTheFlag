@@ -22,6 +22,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * tablero donde se realiza la partida
+ * @author LorenaRamirez
+ *
+ */
 public class Tablero extends BorderPane{
 	
 	private Button[][] buttons= new Button[4][4];
